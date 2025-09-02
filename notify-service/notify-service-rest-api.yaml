@@ -1,0 +1,40 @@
+openapi: 3.1.1
+info:
+  title: Order Service
+  version: 1.0.0
+  description: Notification Service OTUS homework
+servers:
+  - url: http://arch.homework/notify-service/
+    description: minikube dev environment
+paths:
+  /getMessages/{accountId}:
+    get:
+      summary: IF7 - Get messages
+      operationId: getMessages
+      responses:
+        '200':
+          description: Messages list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  schema:
+                    $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    Message:
+      type: object
+      description: Message payload
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique message identifier
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp when the message was created
+        message:
+          type: string
+          description: Message text

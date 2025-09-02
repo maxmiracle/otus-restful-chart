@@ -1,0 +1,130 @@
+openapi: 3.1.1
+info:
+  title: Billing Service
+  version: 1.0.0 
+  description: Billing Service OTUS homework
+servers:
+  - url: http://arch.homework/billing-service/ 
+    description: minikube dev environment
+paths:
+  /accounts:
+    post:
+      summary: IF1 - Create new account
+      operationId: createAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Account'
+      responses:
+        '201':
+          description: Account created
+        '409':
+          description: Account with the same name already exists
+  /sumup:
+    post:
+      summary: IF2 - Sum up account balance
+      operationId: sumUp
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SumUpRequest'
+      responses:
+        '200':
+          description: Account balance summed up
+  /getBalance/{accountId}:
+    get:
+      summary: IF3 - Get account balance
+      operationId: getBalance
+      parameters:
+        - name: accountId
+          in: path
+          description: Account identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Account balance
+          content:
+            application/json:
+              schema:
+                type: number
+                format: double
+  /makePayment:
+    post:
+      summary: IF5 - Make payment
+      operationId: makePayment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MakePaymentRequest'
+components:
+  schemas:
+    Account:
+      type: object
+      description: Account payload for create requests and account representation in responses
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unique account identifier
+        name:
+          type: string
+          minLength: 1
+          description: Human-readable account name
+        currency:
+          type: string
+          description: ISO 4217 currency code (e.g., USD, EUR)
+          minLength: 3
+          maxLength: 3
+          example: USD
+        balance:
+          type: number
+          format: double
+          readOnly: true
+          description: Current balance of the account
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Timestamp when the account was created
+      required:
+        - name
+        - currency
+    SumUpRequest:
+      type: object
+      description: Sum up request payload
+      properties:
+        accountId:
+          type: string
+          format: uuid
+          description: Account identifier
+        amount:
+          type: number
+          format: double
+          description: Amount to sum up
+    MakePaymentRequest:
+      type: object
+      description: Make payment request payload
+      properties:
+        accountId:
+          type: string
+        amount:
+          type: number
+          format: double
+          description: Amount to pay
+        paymentPurpose:
+          type: string
+          description: Payment purpose
+      required:
+        - accountId
+        - amount
+        - paymentPurpose
+

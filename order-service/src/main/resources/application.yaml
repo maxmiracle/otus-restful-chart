@@ -1,0 +1,14 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /order-service
+spring:
+  application:
+    name: order-service
+  kafka:
+    bootstrap-servers: localhost:29092
+    producer:
+      client-id: order-service
+    admin:
+      auto-create: true
+make-payment-url: http://localhost:8080/billig-service/makePayment

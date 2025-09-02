@@ -1,0 +1,36 @@
+openapi: 3.1.1
+info:
+  title: Order Service
+  version: 1.0.0
+  description: Order Service OTUS homework
+servers:
+  - url: http://arch.homework/order-service/
+    description: minikube dev environment
+paths:
+  /makeOrder:
+    post:
+      summary: IF4 - Make order
+      operationId: makeOrder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MakeOrderRequest'
+      responses:
+        '204':
+          description: Order created
+components:
+  schemas:
+    MakeOrderRequest:
+      properties:
+        productName:
+          type: string
+          description: Product name
+        amount:
+          type: number
+          format: double
+          description: Amount of products
+        details:
+          type: string
+          description: Additional details

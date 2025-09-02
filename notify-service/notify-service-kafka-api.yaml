@@ -1,0 +1,38 @@
+asyncapi: 3.0.0
+info:
+  title: Notify Service Kafka API
+  version: 1.0.0
+defaultContentType: application/json
+channels:
+  order-notification:
+    address: order.notify
+    messages:
+      orderNotification:
+        payload:
+          $ref: '#/components/schemas/OrderNotification'
+    description: The topic on which measured values may be produced and consumed.
+operations:
+  receive:
+    action: receive
+    channel:
+      $ref: '#/channels/order-notification'
+components:
+  messages:
+    orderNotification:
+      payload:
+        $ref: '#/components/schemas/OrderNotification'
+  schemas:
+    OrderNotification:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique message identifier
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp when the message was created
+        message:
+          type: string
+          description: Message text

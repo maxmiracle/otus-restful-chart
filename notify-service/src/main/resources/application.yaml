@@ -1,0 +1,11 @@
+server:
+  port: 8083
+  servlet:
+    context-path: /notify-service
+spring:
+  application:
+    name: notify-service
+  kafka:
+    bootstrap-servers: localhost:29092
+    admin:
+      auto-create: true
