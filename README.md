@@ -16,6 +16,7 @@
 - /billing-service/billing-service-rest-api.yaml
 - /notify-service/notify-service-kafka-api.yaml (asyncApi для )
 - /notify-service/notify-service-rest-api.yaml
+- /order-service/src/main/resources/order-service-rest-api.yaml
 
 #### заметки реализации (disclaimer)
 - Несмотря, что добавлена postgresql в helm, она не используется
