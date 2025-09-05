@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -42,27 +43,43 @@ public class MakeOrderController implements MakeOrderApi {
         request.setAmount(makeOrderRequest.getAmount());
         request.setAccountId(makeOrderRequest.getAccountId());
         request.setPaymentPurpose(makeOrderRequest.getProductName());
-        var result = defaultClient.post()
-                .uri(makePaymentUrl)
-                .body(request)
-                .retrieve()
-                .toBodilessEntity();
-        if (result.getStatusCode().is2xxSuccessful()) {
+        log.info("Make order request: {}", makePaymentUrl);
+        HttpStatusCode resultCode;
+        try {
+            var result = defaultClient.post()
+                    .uri(makePaymentUrl)
+                    .body(request)
+                    .retrieve()
+                    .toBodilessEntity();
+            resultCode = result.getStatusCode();
+        } catch (HttpClientErrorException ex) {
+            resultCode = ex.getStatusCode();
+            log.error("Make order request failed: {}", ex.getMessage());
+        }
+        if (resultCode.is2xxSuccessful()) {
             OrderNotification notification = new OrderNotification(
                     makeOrderRequest.getAccountId(),
                     UUID.randomUUID().toString(),
                     OffsetDateTime.now(),
                     String.format("Order created. Product: %s, Amount: %s", makeOrderRequest.getProductName(), makeOrderRequest.getAmount()));
+            log.info(notification.toString());
             sendMessage(notification);
         } else {
             OrderNotification notification = new OrderNotification(
                     makeOrderRequest.getAccountId(),
                     UUID.randomUUID().toString(),
                     OffsetDateTime.now(),
-                    String.format("Error order payment. Product: %s, Amount: %s. ErrCode: %s", makeOrderRequest.getProductName(), makeOrderRequest.getAmount(), result.getStatusCode()));
+                    String.format("Error order payment. Product: %s, Amount: %s. ErrCode: %s", makeOrderRequest.getProductName(), makeOrderRequest.getAmount(), resultCode));
+            log.error(notification.toString());
             sendMessage(notification);
         }
-        return ResponseEntity.ok().build();
+        if (resultCode.is2xxSuccessful()) {
+            return ResponseEntity.ok().build();
+        } else if (resultCode.isSameCodeAs(HttpStatus.UNPROCESSABLE_ENTITY)){
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        } else {
+            return ResponseEntity.status(resultCode).build();
+        }
     }
 
 

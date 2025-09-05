@@ -12,7 +12,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
-@RequestMapping
+@RequestMapping(path = "/notify-service")
 public class NotifyController {
 
     private final Map<UUID, List<OrderNotification>> storage = new ConcurrentHashMap<>();

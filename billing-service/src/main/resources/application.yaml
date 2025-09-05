@@ -1,7 +1,14 @@
 server:
   port: 8080
-  servlet:
-    context-path: /billing-service
 spring:
   application:
     name: billing-service
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"

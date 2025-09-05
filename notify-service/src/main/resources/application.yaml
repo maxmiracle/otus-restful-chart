@@ -1,11 +1,18 @@
 server:
-  port: 8083
-  servlet:
-    context-path: /notify-service
+  port: 8080
 spring:
   application:
     name: notify-service
   kafka:
-    bootstrap-servers: localhost:29092
+    bootstrap-servers: ${ORDER_SYS_KAFKA_SERVICE_HOST}:${ORDER_SYS_KAFKA_SERVICE_PORT}
     admin:
       auto-create: true
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"

@@ -15,7 +15,7 @@ import ru.otus.billing.service.AccountService;
 import java.util.UUID;
 
 @RestController
-@RequestMapping
+@RequestMapping(path = "/billing-service")
 public class BillingController {
 
     private final AccountService service;
@@ -61,7 +61,13 @@ public class BillingController {
     public ResponseEntity<Void> makePayment(@Valid @RequestBody MakePaymentRequest request) {
             service.makePayment(request.getAccountId(), request.getAmount(), request.getPaymentPurpose());
             return ResponseEntity.ok().build();
-       }
+    }
+
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler( InsufficientFundsException.class )
+    public String handleException(InsufficientFundsException ex) {
+        return ex.getMessage();
+    }
 
 
 }

@@ -1,14 +1,21 @@
 server:
-  port: 8081
-  servlet:
-    context-path: /order-service
+  port: 8080
 spring:
   application:
     name: order-service
   kafka:
-    bootstrap-servers: localhost:29092
+    bootstrap-servers: ${ORDER_SYS_KAFKA_SERVICE_HOST}:${ORDER_SYS_KAFKA_SERVICE_PORT}
     producer:
       client-id: order-service
     admin:
       auto-create: true
-make-payment-url: http://localhost:8080/billig-service/makePayment
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+make-payment-url: http://${ORDER_SYS_BILLING_SERVICE_CHART_SERVICE_HOST}:8080/billing-service/makePayment

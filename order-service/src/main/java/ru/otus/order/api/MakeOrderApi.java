@@ -18,6 +18,7 @@ import java.util.Optional;
 
 @Validated
 @Tag(name = "makeOrder", description = "the makeOrder API")
+@RequestMapping(path = "/order-service")
 public interface MakeOrderApi {
 
     default Optional<NativeWebRequest> getRequest() {
